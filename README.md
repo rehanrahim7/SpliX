@@ -5,7 +5,8 @@
 ---
 
 ## 🌐 Live Demo
-Try it here: [SpliX – Bill Splitter](https://rehanrahim7.github.io/splix-bill-splitter/)
+Try it here: [SpliX – Bill Splitter](https://rehanrahim7.github.io/splix
+/)
 
 ---
 
