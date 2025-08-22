@@ -304,7 +304,7 @@ function drawWheel() {
         '#40E0D0', // Turquoise
         '#FF3B1F', // Orange-Red (variant)
         '#8B0000', // Dark Red
-        '#00FF7F'  // Spring Green
+        '#00FF7F' // Spring Green
     ];
 
     // Draw each segment
@@ -351,18 +351,19 @@ function spinWheel() {
     spinning = true;
 
     // Sync audio with 13s spin
-    try { wheelSound.currentTime = 0; } catch (_) {}
+    try {
+        wheelSound.currentTime = 0;
+    } catch (_) {}
     wheelSound.play();
 
     const canvas = document.getElementById("wheelCanvas");
     const ctx = canvas.getContext("2d");
     const resultText = document.getElementById("wheelResult");
     const breakdownList = document.getElementById("wheelBreakdown");
-winner
     const durationMs = 13000; // exact 13 seconds
     const startTime = performance.now();
 
-            const numSegments = people.length;
+    const numSegments = people.length;
     const anglePerSegment = (2 * Math.PI) / numSegments;
 
     // Pointer angle at the very top pointing inward (12 o'clock)
@@ -376,7 +377,9 @@ winner
     const extraRotations = 8; // feel free to tweak for visual taste
     const targetAngle = pointerAngle - winnerMidAngle + extraRotations * 2 * Math.PI;
 
-    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
 
     function render(angle) {
         ctx.save();
@@ -396,7 +399,7 @@ winner
         render(wheelAngle);
 
         if (t < 1) {
-        requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
         } else {
             spinning = false;
             const winner = people[winnerIndex];
@@ -432,7 +435,10 @@ winner
             }
 
             // Ensure audio stops at the end of the spin
-            try { wheelSound.pause(); wheelSound.currentTime = 0; } catch (_) {}
+            try {
+                wheelSound.pause();
+                wheelSound.currentTime = 0;
+            } catch (_) {}
         }
     }
 
@@ -504,7 +510,7 @@ function rollDiceAnimated() {
 
     // Gather selections; allow multiple picks per person
     const personToNumbers = new Map(); // name -> number[]
-    const numberToPeople = new Map();  // number -> name[]
+    const numberToPeople = new Map(); // number -> name[]
     const rows = document.querySelectorAll('#dicePicks .pick-row');
     rows.forEach(row => {
         const name = row.querySelector('.pick-name')?.textContent?.trim();
@@ -526,7 +532,8 @@ function rollDiceAnimated() {
     // Build rollable numbers set based on mode
     let rollableNumbers = [];
     if (mode === 'chosenOnly') {
-        for (let n = 1; n <= 6; n++) if ((numberToPeople.get(n) || []).length > 0) rollableNumbers.push(n);
+        for (let n = 1; n <= 6; n++)
+            if ((numberToPeople.get(n) || []).length > 0) rollableNumbers.push(n);
         if (rollableNumbers.length === 0) {
             alert('No numbers chosen. Pick numbers first.');
             return;
@@ -534,7 +541,8 @@ function rollDiceAnimated() {
     } else {
         // coverAll: ensure all numbers 1-6 are covered; if gaps, auto-assign to players in round-robin
         const missing = [];
-        for (let n = 1; n <= 6; n++) if ((numberToPeople.get(n) || []).length === 0) missing.push(n);
+        for (let n = 1; n <= 6; n++)
+            if ((numberToPeople.get(n) || []).length === 0) missing.push(n);
         if (missing.length > 0) {
             const names = people.slice();
             if (names.length === 0) {
@@ -559,10 +567,12 @@ function rollDiceAnimated() {
                 const select = row.querySelector('select[data-pick-multi]');
                 if (!name || !select) return;
                 const set = new Set(personToNumbers.get(name) || []);
-                Array.from(select.options).forEach(opt => { opt.selected = set.has(parseInt(opt.value, 10)); });
+                Array.from(select.options).forEach(opt => {
+                    opt.selected = set.has(parseInt(opt.value, 10));
+                });
             });
         }
-        rollableNumbers = [1,2,3,4,5,6];
+        rollableNumbers = [1, 2, 3, 4, 5, 6];
     }
 
     // Start rolling animation
@@ -658,14 +668,20 @@ function readDiceAssignments() {
         });
         personToNumbers.set(name, nums);
     });
-    return { personToNumbers, numberToPerson, chosenSet };
+    return {
+        personToNumbers,
+        numberToPerson,
+        chosenSet
+    };
 }
 
 // Disable options that are already chosen by other users to keep numbers unique
 function syncDicePickOptions() {
     const wrap = document.getElementById('dicePicks');
     if (!wrap) return;
-    const { numberToPerson } = readDiceAssignments();
+    const {
+        numberToPerson
+    } = readDiceAssignments();
     const rows = wrap.querySelectorAll('.pick-row');
     rows.forEach(row => {
         const name = row.querySelector('.pick-name')?.textContent?.trim();
@@ -689,9 +705,13 @@ function syncDicePickOptions() {
 function ensureOptionACoverage() {
     const wrap = document.getElementById('dicePicks');
     if (!wrap) return;
-    const { personToNumbers, chosenSet } = readDiceAssignments();
+    const {
+        personToNumbers,
+        chosenSet
+    } = readDiceAssignments();
     const remaining = [];
-    for (let n = 1; n <= 6; n++) if (!chosenSet.has(n)) remaining.push(n);
+    for (let n = 1; n <= 6; n++)
+        if (!chosenSet.has(n)) remaining.push(n);
     if (remaining.length === 0) return;
 
     // Build list of [name, currentCount]
@@ -699,7 +719,11 @@ function ensureOptionACoverage() {
     const peopleCounts = rows.map(row => {
         const name = row.querySelector('.pick-name')?.textContent?.trim();
         const current = (personToNumbers.get(name) || []).length;
-        return { name, row, current };
+        return {
+            name,
+            row,
+            current
+        };
     }).filter(x => !!x.name);
 
     // Assign remaining numbers one by one to the person with the fewest numbers
@@ -763,7 +787,9 @@ const observer = new MutationObserver(() => {
     renderDicePicks();
     drawWheel();
 });
-observer.observe(document.getElementById("peopleList"), { childList: true });
+observer.observe(document.getElementById("peopleList"), {
+    childList: true
+});
 
 // Render percentage inputs in Step 3
 function renderPercentInputs() {
@@ -975,7 +1001,9 @@ window.addEventListener("DOMContentLoaded", () => {
     const darkModeSetting = localStorage.getItem("darkMode") === "true";
     const darkModeToggleEl = document.getElementById("darkModeToggle");
     if (darkModeToggleEl && "checked" in darkModeToggleEl) {
-        try { darkModeToggleEl.checked = darkModeSetting; } catch (_) {}
+        try {
+            darkModeToggleEl.checked = darkModeSetting;
+        } catch (_) {}
     }
     document.body.classList.toggle("dark-mode", darkModeSetting);
 });
