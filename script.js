@@ -407,19 +407,30 @@ function spinWheel() {
 
             // Build and show the discounted payment breakdown
             breakdownList.innerHTML = "";
+            // Add a header to make it clear the breakdown is working
+            const header = document.createElement("li");
+            header.className = "list-group-item list-group-item-primary fw-bold";
+            header.textContent = "💰 Payment Breakdown (50% off for winner!)";
+            breakdownList.appendChild(header);
+
+            console.log("Building breakdown for winner:", winner);
+            console.log("Breakdown element:", breakdownList);
 
             const currency = document.getElementById("currency").value;
             const billAmount = parseFloat(document.getElementById("billAmount").value);
+            console.log("Currency:", currency, "Bill amount:", billAmount);
 
             if (!isNaN(billAmount) && billAmount > 0 && people.length > 0) {
                 // Original equal share
                 const originalShare = billAmount / people.length;
                 const winnerNewPay = originalShare * 0.5;
                 const discount = originalShare - winnerNewPay;
+                console.log("Original share:", originalShare, "Winner new pay:", winnerNewPay, "Discount:", discount);
 
                 // Remaining to distribute among others equally
                 const othersCount = people.length - 1;
                 const redistributed = discount / (othersCount > 0 ? othersCount : 1);
+                console.log("Others count:", othersCount, "Redistributed per person:", redistributed);
 
                 people.forEach((p, idx) => {
                     const li = document.createElement("li");
@@ -430,8 +441,12 @@ function spinWheel() {
                         const newPay = originalShare + redistributed;
                         li.textContent = `${p}: ${currency}${newPay.toFixed(2)}`;
                     }
+                    console.log("Adding list item:", li.textContent);
                     breakdownList.appendChild(li);
                 });
+                console.log("Final breakdown list children:", breakdownList.children.length);
+            } else {
+                console.log("Invalid bill amount or no people:", billAmount, people.length);
             }
 
             // Ensure audio stops at the end of the spin
