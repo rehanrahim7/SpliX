@@ -41,7 +41,7 @@
                 <!-- Combined input and currency selector -->
                 <div class="row mb-3">
                     <div class="col-8">
-                        <input type="number" id="billAmount" class="form-control" placeholder="Enter total bill amount">
+                        <input type="number" id="billAmount" class="form-control" placeholder="Enter total bill amount" inputmode="decimal" step="0.01" pattern="[0-9]*">
                     </div>
                     <div class="col-4">
                         <select id="currency" class="form-select">
@@ -58,7 +58,7 @@
 
                     <!-- Input and button to add person -->
                     <form id="personForm" class="d-flex mb-3" onsubmit="addPerson(); return false;">
-                        <input type="text" id="personName" class="form-control me-2" placeholder="Enter name" aria-label="Enter name" required>
+                        <input type="text" id="personName" class="form-control me-2" placeholder="Enter name" aria-label="Enter name" required pattern="[A-Za-z ]+">
                         <button class="btn btn-primary" type="submit">Add</button>
                     </form>
 
