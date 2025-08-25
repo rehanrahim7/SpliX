@@ -16,8 +16,10 @@ function addPerson() {
     const nameInput = document.getElementById("personName");
     const name = nameInput.value.trim();
 
-    if (name === "") {
-        alert("Please enter a name!");
+    // Validate name: letters and spaces only
+    if (name === "" || /[^A-Za-z ]/.test(name)) {
+        alert("Please enter a valid name (letters and spaces only).");
+        nameInput.focus();
         return;
     }
 
@@ -1174,3 +1176,28 @@ document.addEventListener("DOMContentLoaded", function() {
     // Render initial percent inputs if any people exist
     renderPercentInputs();
 });
+
+// Strict input constraints
+(function(){
+    const billInput = document.getElementById("billAmount");
+    if (billInput) {
+        billInput.addEventListener('keydown', function(e){
+            // Block e/E, +, -
+            if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
+                e.preventDefault();
+            }
+        });
+        billInput.addEventListener('input', function(){
+            // Remove accidental non-numeric characters except dot
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+    }
+
+    const nameInput = document.getElementById("personName");
+    if (nameInput) {
+        nameInput.addEventListener('input', function(){
+            // Allow only letters and spaces
+            this.value = this.value.replace(/[^A-Za-z ]/g, '');
+        });
+    }
+})();
