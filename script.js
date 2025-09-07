@@ -1,4 +1,3 @@
-// JavaScript will go here later
 console.log("Bill Splitter loaded!");
 // This array will store the names of people added
 let people = [];
@@ -7,16 +6,14 @@ let splitHistory = []; // This array will store all previous splits
 
 // Load the wheel spinning sound (combined with winner cue)
 const wheelSound = new Audio("assets/wheel-sound.mp3");
-wheelSound.volume = 0.8; // Optional: Adjust volume if needed
+wheelSound.volume = 0.8;
 
-
-// Function to add a person to the list with a percentage input
 // Function to add a person to the list with a percentage input
 function addPerson() {
     const nameInput = document.getElementById("personName");
     const name = nameInput.value.trim();
 
-    // Validate name: letters and spaces only
+    // Validate name: Letters and spaces only
     if (name === "" || /[^A-Za-z ]/.test(name)) {
         alert("Please enter a valid name (letters and spaces only).");
         nameInput.focus();
@@ -34,7 +31,7 @@ function addPerson() {
     const nameSpan = document.createElement("span");
     nameSpan.textContent = name;
 
-    // Append name only in Step 2 (percentages handled in Step 3)
+    // Append name only in Step 2 (percentages are handled in Step 3)
     listItem.appendChild(nameSpan);
 
     // Add to the list in HTML
@@ -110,19 +107,16 @@ function splitByPercentage() {
         return;
     }
 
-    // Build list from Step 3 percentList (moved UI)
-    const listItems = document.querySelectorAll("#percentList li");
+    // Read all percentage inputs from Step 3
+    const percentInputs = document.querySelectorAll('#percentList input.percent-input');
 
     let totalPercent = 0;
     const splitData = [];
 
-    // Loop through each person and read their percentage
-    listItems.forEach(item => {
-        const name = item.querySelector(".percent-name").textContent;
-        const input = item.querySelector("input");
-        const rawValue = input.value.trim();
+    percentInputs.forEach(input => {
+        const name = input.getAttribute('data-name') || 'Unknown';
+        const rawValue = (input.value || '').trim();
 
-        // Check if percentage is missing
         if (rawValue === "") {
             alert(`Please enter a percentage for ${name}`);
             input.focus();
@@ -130,8 +124,6 @@ function splitByPercentage() {
         }
 
         const percent = parseFloat(rawValue);
-
-        // Check if input is a valid number and not negative
         if (isNaN(percent) || percent < 0) {
             alert(`Invalid percentage for ${name}`);
             input.focus();
@@ -140,42 +132,38 @@ function splitByPercentage() {
 
         totalPercent += percent;
         splitData.push({
-            name: name,
-            percent: percent
+            name,
+            percent
         });
     });
 
-    // Ensure the total percentage adds up to 100
     if (Math.round(totalPercent) !== 100) {
         alert(`Total percentage must be exactly 100%. It's currently ${totalPercent}%.`);
         return;
     }
 
-    // Clear and show result section
     const resultDiv = document.getElementById("result");
     resultDiv.classList.remove("d-none");
 
     const resultList = document.getElementById("resultList");
     resultList.innerHTML = "";
 
-    // Display how much each person pays
     splitData.forEach(entry => {
         const amount = ((entry.percent / 100) * billAmount).toFixed(2);
         const item = document.createElement("li");
         item.className = "list-group-item";
         item.textContent = `${entry.name} pays ${currency}${amount} (${entry.percent}%)`;
         resultList.appendChild(item);
-
-        // Save to history
-        saveToHistory("Percentage Split", splitData.map(entry => ({
-            name: entry.name,
-            amount: `${currency}${((entry.percent / 100) * billAmount).toFixed(2)}`
-        })));
-
     });
+
+    // Save once after building
+    saveToHistory("Percentage Split", splitData.map(entry => ({
+        name: entry.name,
+        amount: `${currency}${((entry.percent / 100) * billAmount).toFixed(2)}`
+    })));
 }
 
-// Function for Luck Mode: one pays nothing, rest split the full bill
+// Function for Luck Mode: One pays nothing, rest split the full bill
 function luckModeSplit() {
     const currency = document.getElementById("currency").value;
     const billAmount = parseFloat(document.getElementById("billAmount").value);
@@ -190,7 +178,7 @@ function luckModeSplit() {
         return;
     }
 
-    // Pick a random lucky person
+    // Picking a random lucky person
     const luckyIndex = Math.floor(Math.random() * people.length);
     const luckyPerson = people[luckyIndex];
 
@@ -376,7 +364,7 @@ function spinWheel() {
     const winnerMidAngle = winnerIndex * anglePerSegment + anglePerSegment / 2;
 
     // Choose a pleasing number of extra rotations
-    const extraRotations = 8; // feel free to tweak for visual taste
+    const extraRotations = 8;
     const targetAngle = pointerAngle - winnerMidAngle + extraRotations * 2 * Math.PI;
 
     function easeOutCubic(t) {
@@ -556,7 +544,7 @@ function rollDiceAnimated() {
             return;
         }
     } else {
-        // coverAll: ensure all numbers 1-6 are covered; if gaps, auto-assign to players in round-robin
+        // coverAll: Ensure all numbers 1-6 are covered; if gaps, auto-assign to players in round-robin
         const missing = [];
         for (let n = 1; n <= 6; n++)
             if ((numberToPeople.get(n) || []).length === 0) missing.push(n);
@@ -824,8 +812,9 @@ function renderPercentInputs() {
         input.min = '0';
         input.max = '100';
         input.placeholder = '%';
-        input.className = 'form-control ms-3';
+        input.className = 'form-control ms-3 percent-input';
         input.style.width = '80px';
+        input.setAttribute('data-name', name);
         li.appendChild(label);
         li.appendChild(input);
         list.appendChild(li);
@@ -1090,9 +1079,9 @@ document.addEventListener("keydown", function(event) {
 });
 
 // On page load, apply saved theme
-// removed extra window.onload to avoid overriding other handlers
+// Removed extra window.onload to avoid overriding other handlers
 // Function to save and display split history
-// removed duplicate saveToHistory that conflicted with localStorage version
+// Removed duplicate saveToHistory that conflicted with localStorage version
 // Function to reset the app to its initial state
 function clearAll() {
     // Clear input fields
@@ -1144,7 +1133,7 @@ function downloadHistory() {
 }
 
 // Apply saved preference on load
-// removed duplicate window.onload to prevent overriding
+// Removed duplicate window.onload to prevent overriding
 // Add event listener for Enter key on person name input
 document.addEventListener("DOMContentLoaded", function() {
     const personNameInput = document.getElementById("personName");
@@ -1178,16 +1167,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Strict input constraints
-(function(){
+(function() {
     const billInput = document.getElementById("billAmount");
     if (billInput) {
-        billInput.addEventListener('keydown', function(e){
+        billInput.addEventListener('keydown', function(e) {
             // Block e/E, +, -
             if (e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
                 e.preventDefault();
             }
         });
-        billInput.addEventListener('input', function(){
+        billInput.addEventListener('input', function() {
             // Remove accidental non-numeric characters except dot
             this.value = this.value.replace(/[^0-9.]/g, '');
         });
@@ -1195,7 +1184,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const nameInput = document.getElementById("personName");
     if (nameInput) {
-        nameInput.addEventListener('input', function(){
+        nameInput.addEventListener('input', function() {
             // Allow only letters and spaces
             this.value = this.value.replace(/[^A-Za-z ]/g, '');
         });
