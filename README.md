@@ -61,7 +61,7 @@ The wheel uses **10 vibrant colors** for an attractive look:
 ## 🚀 How to Run
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/splix-bill-splitter.git
+   git clone https://github.com/rehanrahim7/splix-bill-splitter.git
 
 2. Open index.html in your browser.
 
